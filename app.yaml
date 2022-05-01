@@ -1,0 +1,8 @@
+service: test-ing-atm-apis-v1
+runtime: nodejs14
+env_variables:
+  PORT: 3000
+  JWTKEY: '4t7uierghfvbhr3yt74tgrvuhrbvjh'
+  TOKEN_EXPIRATION: '48h'
+  BEARER: 'Bearer'
+  NODE_ENV: 'production'

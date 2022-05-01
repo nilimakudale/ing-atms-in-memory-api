@@ -1,39 +1,62 @@
- <p align="center">A progressive <a href="http://nodejs.org" target="blank">Node.js</a> framework for building efficient and scalable server-side applications, heavily inspired by <a href="https://angular.io" target="blank">Angular</a>.
- </p>
+# REST api to CRUD ING ATMs
 
-## Description
-A Simple CRUD Web API with NestJs, Postgres, Sequelize ORM. 
 
-## Installation
+Application Features:
 
-```bash
-$ git clone https://github.com/onwuvic/nest-blog-api.git
+* Create the ING's ATM
+* Update the existing ATM
+* Delete the ATM record
+* List all ATM records
+
+## How to build and deploy application
+
+Installation:
+```text
+npm install 
 ```
 
-## Running the app
+Command to run application locally:
 
-- cd into `nest-blog-api`
-- run `npm install`
-- set up your postgres database
-- rename `.env.sample` to `.env` and populate the required parameters
-- run `npm run start:dev`
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```text
+npm run start:dev
 ```
 
+Command to build application:
 
-## Stay in touch
+```text
+npm run build  
+```
 
-- Author - Victor Onwuzor
-- Twitter - [@victoronwuzor](https://twitter.com/victoronwuzor)
+Command to deploy application on google cloud:
 
-## License
-[MIT licensed](LICENSE).
+```text
+npm run deploy  
+```
+
+### Technology stack
+
+* NodeJs
+* NestJs
+* In-memory-db
+
+## Flow 
+
+Sign Up/ create new user by auth/signup api - with request data :
+{
+    "email":"",
+    "password":"",
+    "name":""
+}
+ in response will get access token to access other APIs.
+
+Login by auth/login api - with request data :
+{
+    "username":"",
+    "password":"",
+}
+ in response will get access token to access other APIs.
+
+
+## Swagger UI
+
+http://localhost:3000/api/#/

@@ -17,7 +17,7 @@ export class IngATMDto {
     street: string;
     @ApiProperty({ type: String, required: false })
     city: string;
-    @ApiProperty({required:false})
+    @ApiProperty({ required: false })
     geoLocation: GeoLocation;
 }
 

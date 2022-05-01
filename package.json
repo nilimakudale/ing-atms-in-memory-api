@@ -6,7 +6,7 @@
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "deploy": "gcloud app deploy",
     "format": "prettier --write \"src/**/*.ts\"",
-    "start": "nest start",
+    "start": "node ./dist/main.js",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",

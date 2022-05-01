@@ -1,11 +1,9 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
-import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
 import * as dotenv from 'dotenv';
@@ -17,7 +15,7 @@ dotenv.config();
   imports: [
     PassportModule,
     UsersModule,
-    InMemoryDBModule,
+    InMemoryDBModule.forFeature('auth'),
     JwtModule.register({
       secret: process.env.JWTKEY,
       signOptions: { expiresIn: process.env.TOKEN_EXPIRATION },
@@ -25,9 +23,8 @@ dotenv.config();
   ],
   providers: [
     AuthService,
-    LocalStrategy,
     JwtStrategy,
   ],
   controllers: [AuthController],
 })
-export class AuthModule {}
+export class AuthModule { }

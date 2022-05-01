@@ -1,41 +1,51 @@
-import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { Test, TestingModule } from '@nestjs/testing';
-import { IngATM } from './ing-atm.entity';
-
 import { IngATMsController } from './ing-atms.controller';
+import { IngATMDto } from './dto/ing-atm.dto';
+import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
+import { IngATM } from './ing-atm.entity';
 
 describe('IngATMs Controller', () => {
   let ingATMsController: IngATMsController;
-  let spyService:  InMemoryDBService<IngATM>;
-
+  let ingATMsService: InMemoryDBService<IngATM>;
   beforeAll(async () => {
-    const app: TestingModule = await Test.createTestingModule({
+    const ingATMsServiceProvider = {
+      provide: InMemoryDBService,
+      useFactory: () => ({
+        create: jest.fn(() => []),
+        getAll: jest.fn(() => []),
+        update: jest.fn(() => { }),
+        delete: jest.fn(() => { })
+      })
+    }
+
+    const module: TestingModule = await Test.createTestingModule({
       controllers: [IngATMsController],
+      providers: [InMemoryDBService, ingATMsServiceProvider]
     }).compile();
 
-    ingATMsController = app.get<IngATMsController>(IngATMsController);
+    ingATMsController = module.get<IngATMsController>(IngATMsController);
+    ingATMsService = module.get<InMemoryDBService<IngATM>>(InMemoryDBService);
   })
 
   it("calling create method", () => {
-    const dto : IngATM = {name:'',id:''};
-    expect(ingATMsController.create(dto)).not.toEqual(null);
+    expect(ingATMsController.createATM({ name: 'test', id: '1' })).not.toEqual(null);
   })
 
   it("calling findAll method", () => {
-    ingATMsController.findAll();
-    expect(spyService.getAll).toHaveBeenCalled();
+    ingATMsController.findAllATMs();
+    expect(ingATMsService.getAll).toHaveBeenCalled();
   })
 
   it("calling update method", () => {
-    const dto : IngATM = {name:'',id:''};
-    expect(ingATMsController.update(dto.id,dto)).not.toEqual(null);
-    expect(spyService.update).toHaveBeenCalled();
-    expect(spyService.update).toHaveBeenCalledWith(1,dto);
+    const dto = new IngATMDto();
+    expect(ingATMsController.updateATM("1", { name: 'test', id: '1' })).not.toEqual(null);
+    expect(ingATMsService.update).toHaveBeenCalled();
+    expect(ingATMsService.update).toHaveBeenCalledWith({ name: 'test', id: '1' });
   })
 
   it("calling delete method", () => {
-    ingATMsController.remove("1");
-    expect(spyService.delete).toHaveBeenCalledWith("1");
+    ingATMsController.removeATM("1");
+    expect(ingATMsService.delete).toHaveBeenCalledWith("1");
   })
 
   it('should be defined', () => {

@@ -1,39 +1,65 @@
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../users/user.entity';
-
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
 describe('Auth Controller', () => {
   let controller: AuthController;
-  let spyService: AuthService;
-  let UsersService :  InMemoryDBService<User>
+  let authService: AuthService;
+  let userService: InMemoryDBService<User>;
+
+  const testUser = {
+    email: 'nilima@gmail.com',
+    password: 'n1l1ma',
+    name: 'test'
+  };
 
   beforeEach(async () => {
-    const ApiServiceProvider = {
-      provide: AuthService,
+    const userServiceProvider = {
+      provide: InMemoryDBService,
       useFactory: () => ({
-        login: jest.fn(() => {}),
-        create: jest.fn(() => {}),
+        query: jest.fn((email) => {
+          if (email === testUser.email)
+            return [testUser];
+          else return [];
+        }),
       })
     }
+
+    const authServiceProvider = {
+      provide: AuthService,
+      useFactory: () => ({
+        login: jest.fn(() => { }),
+        create: jest.fn(() => { }),
+        signUp: jest.fn(() => { }),
+      })
+    }
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
-        ApiServiceProvider,
+        InMemoryDBService,
+        authServiceProvider,
+        userServiceProvider
       ],
       controllers: [AuthController],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
-    spyService = module.get<AuthService>(AuthService);
+    authService = module.get<AuthService>(AuthService);
+    userService = module.get<InMemoryDBService<User>>(InMemoryDBService);
   });
 
   it("calling login method", () => {
-    let loginReq = {username:'',password:''};
+    let loginReq = { username: testUser.email, password: testUser.password };
     expect(controller.login(loginReq)).not.toEqual(null);
-    expect(spyService.login).toHaveBeenCalled();
+    expect(authService.login).toHaveBeenCalled();
+  })
+
+  it("calling signup method", () => {
+    expect(controller.signUp(testUser)).not.toEqual(null);
+    expect(userService.query).toHaveBeenCalled();
   })
 
   it('should be defined', () => {
