@@ -1,5 +1,5 @@
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
-import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Logger, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../users/user.entity';
 import { AuthController } from './auth.controller';
@@ -9,6 +9,7 @@ describe('Auth Controller', () => {
   let controller: AuthController;
   let authService: AuthService;
   let userService: InMemoryDBService<User>;
+  let loggerService : Logger;
 
   const testUser = {
     email: 'nilima@gmail.com',
@@ -37,12 +38,22 @@ describe('Auth Controller', () => {
       })
     }
 
+    const loggerServiceProvider = {
+      provide: Logger,
+      useFactory: () => ({
+        log: jest.fn(() => { }),
+        error: jest.fn(() => { }),
+      })
+    }
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         InMemoryDBService,
+        Logger,
         authServiceProvider,
-        userServiceProvider
+        userServiceProvider,
+        loggerServiceProvider
       ],
       controllers: [AuthController],
     }).compile();
@@ -50,6 +61,7 @@ describe('Auth Controller', () => {
     controller = module.get<AuthController>(AuthController);
     authService = module.get<AuthService>(AuthService);
     userService = module.get<InMemoryDBService<User>>(InMemoryDBService);
+    loggerService = module.get<Logger>(Logger);
   });
 
   it("calling login method", () => {

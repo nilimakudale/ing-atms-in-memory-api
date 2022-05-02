@@ -3,10 +3,12 @@ import { IngATMsController } from './ing-atms.controller';
 import { IngATMDto } from './dto/ing-atm.dto';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { IngATM } from './ing-atm.entity';
+import { Logger } from '@nestjs/common';
 
 describe('IngATMs Controller', () => {
   let ingATMsController: IngATMsController;
   let ingATMsService: InMemoryDBService<IngATM>;
+
   beforeAll(async () => {
     const ingATMsServiceProvider = {
       provide: InMemoryDBService,
@@ -18,9 +20,17 @@ describe('IngATMs Controller', () => {
       })
     }
 
+    const loggerServiceProvider = {
+      provide: Logger,
+      useFactory: () => ({
+        log: jest.fn(() => { }),
+        error: jest.fn(() => { }),
+      })
+    }
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [IngATMsController],
-      providers: [InMemoryDBService, ingATMsServiceProvider]
+      providers: [InMemoryDBService, ingATMsServiceProvider, loggerServiceProvider]
     }).compile();
 
     ingATMsController = module.get<IngATMsController>(IngATMsController);
@@ -37,7 +47,6 @@ describe('IngATMs Controller', () => {
   })
 
   it("calling update method", () => {
-    const dto = new IngATMDto();
     expect(ingATMsController.updateATM("1", { name: 'test', id: '1' })).not.toEqual(null);
     expect(ingATMsService.update).toHaveBeenCalled();
     expect(ingATMsService.update).toHaveBeenCalledWith({ name: 'test', id: '1' });

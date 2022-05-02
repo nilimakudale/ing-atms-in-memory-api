@@ -1,5 +1,5 @@
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
-import { UnauthorizedException } from '@nestjs/common';
+import { Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../users/user.entity';
@@ -9,6 +9,7 @@ describe('AuthService', () => {
   let authService: AuthService;
   let userService: InMemoryDBService<User>;
   let jwtService: JwtService;
+  let loggerService : Logger;
 
   const testUser = {
     email: 'nilima@gmail.com',
@@ -35,14 +36,24 @@ describe('AuthService', () => {
     })
   }
 
+  const loggerServiceProvider = {
+    provide: Logger,
+    useFactory: () => ({
+      log: jest.fn(() => { }),
+      error: jest.fn(() => { }),
+    })
+  }
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         JwtService,
         AuthService,
         InMemoryDBService,
+        Logger,
         JWTServiceProvider,
-        UsersServiceProvider
+        UsersServiceProvider,
+        loggerServiceProvider
       ],
     }).compile();
 
