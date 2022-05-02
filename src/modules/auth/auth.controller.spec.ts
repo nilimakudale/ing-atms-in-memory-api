@@ -60,6 +60,7 @@ describe('Auth Controller', () => {
   it("calling signup method", () => {
     expect(controller.signUp(testUser)).not.toEqual(null);
     expect(userService.query).toHaveBeenCalled();
+    expect(userService.query).toHaveBeenCalledWith(testUser);
   })
 
   it('should be defined', () => {
