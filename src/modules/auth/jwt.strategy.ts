@@ -29,7 +29,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             return payload;
         } catch (error) {
             this.logger.error(error);
-            throw new InternalServerErrorException(error.message ? error.message : 'Internal server error')
+            if (error && error.status != 401)
+                throw new InternalServerErrorException(error.message ? error.message : 'Internal server error')
+            else throw error;
         }
     }
 }
