@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
@@ -12,6 +12,6 @@ import { IngATMsModule } from './modules/ing-atms/ing-atms.module';
     AuthModule,
     IngATMsModule
   ],
-  providers: [AppService],
+  providers: [AppService, Logger],
 })
 export class AppModule { }

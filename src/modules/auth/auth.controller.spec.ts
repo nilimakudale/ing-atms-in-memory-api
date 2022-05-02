@@ -1,4 +1,5 @@
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
+import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../users/user.entity';
 import { AuthController } from './auth.controller';
@@ -60,7 +61,14 @@ describe('Auth Controller', () => {
   it("calling signup method", () => {
     expect(controller.signUp(testUser)).not.toEqual(null);
     expect(userService.query).toHaveBeenCalled();
-    expect(userService.query).toHaveBeenCalledWith(testUser);
+  })
+
+ 
+  it("calling signup method  with existing user", () => {
+    expect(controller.signUp(testUser)).not.toEqual(null);
+    expect(userService.query).toHaveBeenCalled();
+    expect(controller.signUp(testUser))
+    .rejects.toThrowError(ForbiddenException);
   })
 
   it('should be defined', () => {

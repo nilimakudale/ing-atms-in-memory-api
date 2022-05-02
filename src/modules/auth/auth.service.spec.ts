@@ -1,4 +1,5 @@
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
+import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../users/user.entity';
@@ -56,8 +57,9 @@ describe('AuthService', () => {
   });
 
   it('should validate user', async () => {
-    const data = authService.validateUser(testUser.email, testUser.password);
+    const data =await authService.validateUser(testUser.email, testUser.password);
     expect(userService.query).toHaveBeenCalled();
+    jest.spyOn(userService, 'query').mockReturnValueOnce([{id:'1',...testUser}])
     expect(data).toBeDefined();
   });
 
@@ -69,8 +71,11 @@ describe('AuthService', () => {
   it("should generate token(login)", async () => {
     const data = await authService.login({ username: testUser.email, password: testUser.password });
     expect(authService.validateUser(testUser.email, testUser.password)).toBeDefined();
-    expect(data).toBeDefined();
+    jest.spyOn(userService, 'query').mockReturnValueOnce([{id:'1',...testUser}])
+    // expect(await authService.login({ username: testUser.email, password: testUser.password }))
+    // .rejects.toThrowError(UnauthorizedException);
   })
+
 
   it("create new user and generate token(signup)", async () => {
     const data = await authService.create(testUser);
