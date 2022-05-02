@@ -31,7 +31,7 @@ export class AuthService {
             return result;
         } catch (error) {
             this.logger.error(error);
-            throw new InternalServerErrorException(error.message ? error.message : 'Internal server error')
+            throw new InternalServerErrorException('Internal server error')
         }
     }
 
@@ -49,7 +49,7 @@ export class AuthService {
         } catch (error) {
             this.logger.error(error);
             if (error && error.status != 401)
-                throw new InternalServerErrorException(error.message ? error.message : 'Internal server error')
+                throw new InternalServerErrorException('Internal server error')
             else throw error;
         }
     }
@@ -68,7 +68,7 @@ export class AuthService {
             return { user: result, token };
         } catch (error) {
             this.logger.error(error);
-            throw new InternalServerErrorException(error.message ? error.message : 'Internal server error')
+            throw new InternalServerErrorException('Internal server error')
         }
 
     }

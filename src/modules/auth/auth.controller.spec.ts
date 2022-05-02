@@ -68,11 +68,22 @@ describe('Auth Controller', () => {
     let loginReq = { username: testUser.email, password: testUser.password };
     expect(controller.login(loginReq)).not.toEqual(null);
     expect(authService.login).toHaveBeenCalled();
+    jest.spyOn(authService, 'login').mockImplementation(() => {
+      throw new Error();
+    });
+    expect(controller.login(loginReq)).rejects.toMatch('error');
   })
 
   it("calling signup method", () => {
     expect(controller.signUp(testUser)).not.toEqual(null);
     expect(userService.query).toHaveBeenCalled();
+
+    jest.spyOn(userService, 'query').mockImplementation(() => {
+      throw new Error();
+    });
+    expect(controller.signUp(testUser)).rejects.toMatch('error');
+    jest.spyOn(userService, 'query').mockImplementation(() => [{id:'1',...testUser}]);
+    expect(controller.signUp(testUser)).rejects.toMatch('error');
   })
 
  

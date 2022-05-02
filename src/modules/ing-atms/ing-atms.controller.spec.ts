@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { IngATMsController } from './ing-atms.controller';
-import { IngATMDto } from './dto/ing-atm.dto';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { IngATM } from './ing-atm.entity';
 import { Logger } from '@nestjs/common';
@@ -39,11 +38,19 @@ describe('IngATMs Controller', () => {
 
   it("calling create method", () => {
     expect(ingATMsController.createATM({ name: 'test', id: '1' })).not.toEqual(null);
+    jest.spyOn(ingATMsService, 'create').mockImplementation(() => {
+      throw new Error();
+    });
+    expect(ingATMsController.createATM({ name: 'test', id: '1' })).rejects.toMatch('error');
   })
 
   it("calling findAll method", () => {
     ingATMsController.findAllATMs();
     expect(ingATMsService.getAll).toHaveBeenCalled();
+    jest.spyOn(ingATMsService, 'getAll').mockImplementation(() => {
+      throw new Error();
+    });
+    expect(ingATMsController.findAllATMs()).rejects.toMatch('error');
   })
 
   it("calling update method", () => {
@@ -55,6 +62,11 @@ describe('IngATMs Controller', () => {
   it("calling delete method", () => {
     ingATMsController.removeATM("1");
     expect(ingATMsService.delete).toHaveBeenCalledWith("1");
+    jest.spyOn(ingATMsService, 'delete').mockImplementation(() => {
+      throw new Error();
+    });
+    expect(ingATMsController.removeATM("1")).rejects.toMatch('error');
+    
   })
 
   it('should be defined', () => {

@@ -24,11 +24,11 @@ export class IngATMsController {
         this.logger.log(`In findAllATMs()...`);
         try {
             // get atm list 
-            const atmList = await this.ingATMsService.getAll();
+            const atmList = this.ingATMsService.getAll();
             return atmList;
         } catch (error) {
             this.logger.error(error);
-            throw new InternalServerErrorException(error.message ? error.message : 'Internal server error')
+            throw new InternalServerErrorException('Internal server error')
         }
     }
 
@@ -47,7 +47,7 @@ export class IngATMsController {
             return this.ingATMsService.create(post);
         } catch (error) {
             this.logger.error(error);
-            throw new InternalServerErrorException(error.message ? error.message : 'Internal server error')
+            throw new InternalServerErrorException('Internal server error')
         }
     }
 
@@ -68,7 +68,7 @@ export class IngATMsController {
             return this.ingATMsService.get(id)
         } catch (error) {
             this.logger.error(error);
-            throw new InternalServerErrorException(error.message ? error.message : 'Internal server error')
+            throw new InternalServerErrorException('Internal server error')
         }
     }
 
@@ -89,7 +89,7 @@ export class IngATMsController {
             return 'Successfully deleted';
         } catch (error) {
             this.logger.error(error);
-            throw new InternalServerErrorException(error.message ? error.message : 'Internal server error')
+            throw new InternalServerErrorException('Internal server error')
         }
     }
 }
